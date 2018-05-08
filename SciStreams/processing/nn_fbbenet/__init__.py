@@ -38,6 +38,6 @@ inference_function = wraps(sidl_inffunc)(inference_function)
 
 def infer_from_dict(img):
     # the neural network is made for 227x227 images only for now
-    img = imresize(img, (227,227))
-    tags = inference_function(img)
+    #img = imresize(img, (227,227))
+    tags = infer(img)
     return tags
