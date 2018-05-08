@@ -1,26 +1,20 @@
 """
-    This is meant to be run locally
-
-    This DAG is the primary DAG. It will:
-        - pick out images from the stream from detectors.
-        - ensure that the attributes coming in have all needed keys
-            If they don't, it won'process them
-
-        - This spawns the one_image_dag DAG for events
-            with the images expected and attributes
 """
 # TODO : make callback something else callback
 # 
-from databroker import Broker
+# we don't need datbaroker
+#from databroker import Broker
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import h5py
 
 from workflows.one_image_dask import (input_func, to_thumb_func,
                                       parse_attributes_func,
                                       make_calibration_func,
                                       generate_mask_func, circavg_func,
                                       circavg_plot_func, peakfind_func,
-                                      peakfind_plot_func, infer_from_dict)
+                                      peakfind_plot_func, inference)
 
 import numbers
 
@@ -56,8 +50,6 @@ def filter_attributes(attr, type='main'):
 
 
 
-import os
-import h5py
 # this splits images into one image to send to tasks
 def primary_func(data):
     futures = list()
@@ -109,11 +101,8 @@ def primary_func(data):
             res_peak = peakfind_func(res_circavg)
 
             res_peakplot = peakfind_plot_func(res_peak)
-            res_infer = infer_from_dict(new_data)
+            res_infer = inference(new_data)
             print("Good attributes")
             #futures.append(future)
         else:
             print("Bad attributes!")
-
-
-

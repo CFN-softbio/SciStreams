@@ -91,7 +91,7 @@ def primary_func(data, store, signal, context):
         # give it some provenance and data
         new_data = dict(img=img)
         new_data['md'] = md.copy()
-        new_data = TaskData(data=new_data)
+        #new_data = TaskData(data=new_data)
         new_data = MultiTaskData(dataset=new_data)
         good_attr = filter_attributes(new_data['md'])
         if good_attr:

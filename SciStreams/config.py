@@ -56,8 +56,8 @@ _DEFAULTS = {
     'TFLAGS': {'out_dir': '/GPFS/xf11bm/pipeline/ml-tmp',
                'num_batches': 16},
     'logfiles' : {
-        'info': '/home/xf11bm/logs/sciscreams.info.log',
-        'debug': '/home/xf11bm/logs/sciscreams.debug.log',
+        'info': '/home/xf11bm/logs/scistreams.info.log',
+        'debug': '/home/xf11bm/logs/scistreams.debug.log',
     }
 }
 

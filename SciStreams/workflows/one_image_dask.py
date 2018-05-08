@@ -5,9 +5,6 @@ matplotlib.use("Agg")
 
 from functools import partial
 
-from lightflow.models import Dag
-from lightflow.tasks import PythonTask
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -431,65 +428,9 @@ def qphiavg_plot_func(data):
                       xlabel="$\phi\,$(radians)", ylabel="$q\,$(pixel)",)
     return data
 
-
-CMSTask = partial(PythonTask, queue='cms-oneimage-task')
-# create the main DAG that spawns others
-#img_dag = Dag('img_dag')
-input_task = CMSTask(name="input_task",
-                        callback=input_func)
-
-to_thumb_task = CMSTask(name="thumb_task",
-                           callback=to_thumb_func)
-
-parse_attributes_task = CMSTask(name="parse_attrs_task",
-                                   callback=parse_attributes_func)
-
-make_calibration_task = CMSTask(name="make_calibration_task",
-                                   callback=make_calibration_func)
-
-generate_mask_task = CMSTask(name="generate_mask_task",
-                                   callback=generate_mask_func)
-
-#save_mask_task = CMSTask(name="save_mask",
-                                   #callback=save_mask_func)
-
-circavg_task = CMSTask(name="circavg_task",
-                          callback=circavg_func)
-
-circavg_plot_task = CMSTask(name="circavg_plot_task",
-                               callback=circavg_plot_func)
-
-peakfind_task = CMSTask(name="peakfind_task",
-                               callback=peakfind_func,)
-
-peakfind_plot_task = CMSTask(name="peakfind_plot_task",
-                               callback=peakfind_plot_func,)
-
-qphiavg_task = CMSTask(name="qphiavg_task",
-                               callback=qphiavg_func,)
-
-qphiavg_plot_task = CMSTask(name="qphiavg_plot_task",
-                                callback=qphiavg_plot_func)
-
-img_dag_dict = {
-    input_task: {to_thumb_task: None,
-                 parse_attributes_task: None,
-                 circavg_task: 'image',
-                 qphiavg_task: None,
-                },
-    parse_attributes_task: [make_calibration_task,
-                            generate_mask_task],
-    #parse_attributes_task: generate_mask_task,
-    # TODO : Adding these seems to affect keys that make_calibration_task gets
-    make_calibration_task: {circavg_task: 'calibration',
-                            qphiavg_task: 'calibration'},
-    generate_mask_task: {circavg_task: 'mask',
-                         qphiavg_task: 'mask'},
-    #circavg_task: circavg_plot_task,
-    circavg_task: [circavg_plot_task, peakfind_task],
-    peakfind_task: peakfind_plot_task,
-    qphiavg_task: qphiavg_plot_task
-    }
-
-one_image_dag = Dag("img_dag", autostart=False, queue='cms-oneimage')
-one_image_dag.define(img_dag_dict)
+def inference(data):
+    '''
+        Runs an inference algorithm using tensorflow.
+    '''
+    data['tags'] = infer_from_dict(data['img'])
+    return data

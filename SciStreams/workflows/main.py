@@ -9,6 +9,8 @@
 from lightflow.models import Dag, Parameters, Option
 from lightflow.tasks import PythonTask
 
+from SciStreams.loggers import logger
+
 # TODO : make callback something else callback
 # 
 from databroker import Broker
@@ -54,11 +56,16 @@ def main_func(data, store, signal, context):
                     (for optimization).
             descriptor : the descriptor for this data
     '''
+    logger.debug("WORKFLOW : Started a workflow")
+
     # this grabs from the args
     # send data in event by event from headers
     start_time = store.get('start_time')
     stop_time = store.get('stop_time')
     dbname = store.get('dbname')
+    logger.debug("start_time : {}".format(start_time))
+    logger.debug("stop_time : {}".format(stop_time))
+    logger.debug("dbname : {}".format(dbname))
     #MAXNUM = store.get('max_images')
 
     # get the databroker instance

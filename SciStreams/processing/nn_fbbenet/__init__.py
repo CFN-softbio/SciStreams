@@ -18,12 +18,14 @@
 '''
 
 
-from ..config import config
+from ...config import config
+
+from scipy.misc import imresize
 
 from functools import partial, wraps
-from sidl.nn_fbbenet.infer import infer as sidl_infer  # noqa
-from sidl.nn_fbbenet.infer import normalize_img, reduce_img  # noqa
-from sidl.nn_fbbenet.infer import inference_function as sidl_inffunc  # noqa
+from .infer import infer as sidl_infer  # noqa
+from .infer import normalize_img, reduce_img  # noqa
+from .infer import inference_function as sidl_inffunc  # noqa
 
 checkpoint_filename = config.get('modules', {})\
     .get('tensorflow', {}).get('checkpoint_filename', None)
@@ -33,3 +35,9 @@ infer = wraps(sidl_infer)(infer)
 inference_function = partial(sidl_inffunc,
                              checkpoint_filename=checkpoint_filename)
 inference_function = wraps(sidl_inffunc)(inference_function)
+
+def infer_from_dict(img):
+    # the neural network is made for 227x227 images only for now
+    img = imresize(img, (227,227))
+    tags = inference_function(img)
+    return tags
